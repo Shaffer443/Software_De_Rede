@@ -215,6 +215,55 @@ Parabéns! Você já tem um sistema de monitoramento profissional rodando em par
 Qual métrica você está mais interessado em ver primeiro (Tráfego da WAN, uso da CPU, etc.)?
 
 ---
-## Próximo Passo
+## Próximo Passo para correções
+
+Perfeito. Então, o dispositivo **`Gateway 10.4.0.1`** que o PRTG detectou automaticamente está com o IP errado, ou está detectando uma sub-interface ou um outro roteador na sua rede 10.4.0.x.
+
+A melhor abordagem é **corrigir o dispositivo existente** para que ele aponte para o pfSense real (`10.0.0.1`).
+
+---
+
+## Ações Corretivas no PRTG (Mapeando o pfSense)
+
+Siga estas etapas para configurar o monitoramento do pfSense (`10.0.0.1`) usando o SNMP e sua senha (`Monitoramento_Rede_Seap`).
+
+### Passo 1: Corrigir o Dispositivo Existente (pfSense)
+
+1.  Na árvore à esquerda (em **Infraestrutura de rede**), **clique** no dispositivo **`Gateway 10.4.0.1`**.
+2.  No menu superior, clique em **Configurações**.
+3.  **Corrija o Endereço IP:**
+    * Localize o campo **Endereço IPv4**.
+    * Mude o valor de `10.4.0.1` para **`10.0.0.1`**.
+4.  **Corrija o Nome:**
+    * Localize o campo **Nome do Dispositivo** e mude para **`pfSense Firewall 10.0.0.1`**.
+5.  Clique em **Salvar**.
+    * *Nota:* O sensor `Ping` que estava nele pode ficar verde (OK) se a comunicação com `10.0.0.1` estiver funcionando.
+
+### Passo 2: Inserir a Credencial SNMP (Senha)
+
+1.  Ainda na página de **Configurações** do dispositivo `pfSense Firewall 10.0.0.1`.
+2.  Role a tela até encontrar a seção **Credenciais para SNMP**.
+3.  Em **String de Comunidade (v1/v2c):** Digite sua senha: **`Monitoramento_Rede_Seap`**.
+4.  Clique em **Salvar**.
+
+### Passo 3: Adicionar Sensores de Tráfego e CPU/Memória
+
+Com o IP e a senha configurados, agora o PRTG pode solicitar os dados avançados.
+
+1.  Clique de volta na **Visão Geral** do dispositivo `pfSense Firewall 10.0.0.1`.
+2.  Clique no botão **Adicionar Sensor**.
+3.  **Para o Tráfego (WAN e LAN):**
+    * Na busca, digite **`SNMP Traffic`**.
+    * Clique no sensor **`SNMP Traffic`**.
+    * O PRTG vai listar todas as interfaces de rede do pfSense.
+    * **Selecione a interface WAN** (normalmente tem o nome do seu link) e **crie o sensor**.
+    * **Repita** o processo: Adicione um novo **`SNMP Traffic`** e **selecione a interface LAN** (a principal, que atende `10.0.0.x`).
+4.  **Para CPU e Memória:**
+    * Na busca, digite **`SNMP UCD`**.
+    * Adicione o sensor **`SNMP UCD`** ou **`System Health (SNMP)`**. Ele geralmente traz a CPU, memória e tempo de atividade em um único sensor.
+
+Em poucos minutos, você deve ver os novos sensores de tráfego (WAN/LAN) e os de CPU/Memória ficarem verdes e começarem a mostrar gráficos e valores.
+
+Se houver algum erro, o PRTG mostrará o status **Vermelho** ou **Laranja** com uma mensagem explicando o problema (ex: *Timeout* ou *Acesso Negado*). Se isso acontecer, verifique se o serviço SNMP está realmente ativado no pfSense e rodando na interface LAN.
 
 
