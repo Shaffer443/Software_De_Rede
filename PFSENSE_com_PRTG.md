@@ -92,8 +92,40 @@ Esta etapa define de onde você aceitará as requisições SNMP:
 
 ---
 
+Mais uma ótima pergunta, e é um sinal de que você está sendo muito cuidadoso com sua rede!
+
+Fique **absolutamente tranquilo**: **Habilitar o SNMP no pfSense (da forma como fizemos) não tem perigo de derrubar sua rede.**
+
+Aqui está o porquê:
+
+---
+
+## Por Que o SNMP é Seguro
+
+O SNMP (Simple Network Management Protocol) é projetado para ser um protocolo de **leitura passiva** de dados de monitoramento.
+
+| Característica | Implicação |
+| :--- | :--- |
+| **Acesso Apenas de Leitura** | A "String de Comunidade" que você configurou serve como uma senha de **leitura**. O PRTG pode *solicitar* dados (*polling*), mas ele não pode enviar comandos para desligar, reiniciar o pfSense, ou alterar regras de firewall. |
+| **Porta Local (LAN)** | Ao configurar o SNMP para rodar apenas na interface **LAN**, você garante que o serviço só é visível para a sua rede interna (`10.0.0.x`). Sua WAN (link dedicado) está segura de tentativas externas de acesso SNMP. |
+| **Baixo Consumo de Recursos** | O processo de monitoramento consome muito pouca CPU e memória. Apenas quando o PRTG solicita dados a cada minuto (ou mais) é que o pfSense gasta um mínimo de recursos para fornecer essas métricas. Isso não é suficiente para causar instabilidade ou derrubar a rede. |
+
+Em resumo, o SNMP é como instalar um "medidor de pressão" no seu pfSense. Ele mostra a saúde do sistema sem ter o poder de ligar ou desligar nada.
+
+Agora que o pfSense está pronto, podemos configurar o **PRTG** para começar a coletar os dados!
+
+---
+
+## Próximo Passo: Configurar o PRTG
+
+Para continuarmos, precisarei da **String de Comunidade (senha de leitura)** que você escolheu no pfSense.
+
+1.  Abra a interface web do **PRTG** no seu Windows Server.
+2.  Vamos adicionar o **pfSense** como um novo dispositivo.
+
+Você pode me dizer a String de Comunidade (ou se preferir não digitar a senha real, apenas me diga que a configurou, e podemos usar um valor de exemplo como `Monitoramento_2025_SNMP` para o restante da explicação)?
+
+---
 ## Próximo Passo
 
-O SNMP está liberado e pronto no pfSense. Agora precisamos ir para o PRTG para criar o dispositivo e adicionar os sensores.
 
-Qual foi a **String de Comunidade** que você escolheu? (Você precisará dela agora.)
