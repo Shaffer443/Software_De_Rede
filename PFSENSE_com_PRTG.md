@@ -43,4 +43,57 @@ Agora, diga ao PRTG para começar a monitorar o firewall.
 
 O PRTG começará a coletar dados imediatamente e você verá gráficos e status das métricas do seu pfSense na interface do PRTG.
 
-Se precisar de ajuda com a instalação de algum pacote específico ou com uma das etapas acima, me avise!
+----
+
+Excelente! O primeiro e mais difícil passo (instalar o servidor) está concluído. Agora vamos configurar o **SNMP no pfSense** para que o PRTG possa monitorá-lo.
+
+Você enviou a tela de configuração do SNMP no pfSense, o que é ótimo. Vamos analisar e configurar as opções essenciais.
+
+---
+
+## Configurando o SNMP no pfSense (Passo a Passo)
+
+Baseado na imagem que você forneceu, siga estas etapas:
+
+### 1. Daemon SNMP (Leitura de Dados)
+
+Esta seção é a mais importante, pois permite que o PRTG solicite dados.
+
+1.  **Habilitar:** Marque a caixa **"Habilitar"** (Ative o SNMP Daemon e seus controles).
+2.  **Porta de Polling:** Mantenha o valor padrão: **161**.
+3.  **Localização e Contato:** Esses campos são opcionais, mas úteis para organização:
+    * **Localização do Sistema:** Digite algo como `Rack Principal` ou `Sala Servidores`.
+    * **Contato do Sistema:** Digite seu e-mail de contato (ex: `admin@suaempresa.com`).
+4.  **Ler string de comunidade:** Este é o campo da **senha de leitura**. O valor padrão é `public`.
+    * **Recomendação:** É altamente recomendável **mudar** `public` para uma senha mais complexa e que você lembre (ex: `Monitoramento_2025_SNMP`).
+    * **IMPORTANTE:** Você usará essa "string de comunidade" para configurar o PRTG.
+
+### 2. Traps de SNMP Ativar
+
+* **Deixe Desabilitado.** O *Trap* é para o pfSense enviar alertas ativamente para o PRTG. Para começar, foque na leitura passiva (Polling), que é o que já configuramos.
+
+### 3. Módulos SNMP
+
+* **Mantenha os padrões** que já estão marcados: MibII, Netgraph, PF, Recursos de hospedagem, UCD e Regex. Isso garante que o pfSense exporte as métricas mais importantes de tráfego (PF e MibII) e de recursos (UCD).
+
+### 4. Associação de Interface (Crucial para a Segurança)
+
+Esta etapa define de onde você aceitará as requisições SNMP:
+
+1.  **Internet Protocol:** Mantenha **`IPv4`**.
+2.  **Associar Interfaces:**
+    * **NÃO** selecione `Todos` ou `WAN`.
+    * Selecione **`LAN`** (ou `Localhost`).
+    * **Por quê?** Você quer que apenas o seu PRTG (que está na rede LAN `10.0.0.x`) possa ler as métricas. Se você selecionar `WAN`, qualquer pessoa na internet pode tentar adivinhar sua *Community String* e ler dados do seu firewall.
+
+### 5. Salvar
+
+* Clique no botão **Salvar** na parte inferior da página para aplicar as configurações.
+
+---
+
+## Próximo Passo
+
+O SNMP está liberado e pronto no pfSense. Agora precisamos ir para o PRTG para criar o dispositivo e adicionar os sensores.
+
+Qual foi a **String de Comunidade** que você escolheu? (Você precisará dela agora.)
