@@ -123,7 +123,52 @@ Para continuarmos, precisarei da **String de Comunidade (senha de leitura)** que
 1.  Abra a interface web do **PRTG** no seu Windows Server.
 2.  Vamos adicionar o **pfSense** como um novo dispositivo.
 
-Você pode me dizer a String de Comunidade (ou se preferir não digitar a senha real, apenas me diga que a configurou, e podemos usar um valor de exemplo como `Monitoramento_2025_SNMP` para o restante da explicação)?
+Perfeito! Com o **pfSense** configurado e a **String de Comunidade** definida como `Monitoramento_Rede_Seap`, podemos finalmente configurar o **PRTG** para começar a receber os dados.
+
+## Configurando o PRTG para Monitorar o pfSense
+
+Acesse a interface web do PRTG no seu Windows Server 2012 R2. Vamos adicionar o pfSense como um dispositivo e atribuir os sensores.
+
+---
+
+### Passo 1: Adicionar o pfSense como Dispositivo
+
+1.  Na estrutura de árvore do PRTG, clique com o botão direito no seu grupo principal (normalmente o nome da sua instalação) e selecione **Add Device** (Adicionar Dispositivo).
+2.  Preencha as informações:
+    * **Device Name (Nome do Dispositivo):** `pfSense Firewall` (ou outro nome fácil de identificar).
+    * **IPv4 Address (Endereço IPv4):** `10.0.0.1` (ou o IP exato da sua interface LAN do pfSense).
+    * **Device Icon (Ícone):** Você pode escolher um ícone de firewall ou roteador para facilitar a visualização.
+3.  Clique em **OK**.
+
+### Passo 2: Definir as Credenciais SNMP (Community String)
+
+O PRTG precisa da sua "senha de leitura" (`Monitoramento_Rede_Seap`) para se comunicar via SNMP.
+
+1.  Clique no novo dispositivo **`pfSense Firewall`** que você acabou de criar.
+2.  No menu superior, clique em **Settings** (Configurações) ou procure a seção de **Device Settings** (Configurações do Dispositivo).
+3.  Localize a seção **Credentials for SNMP** (Credenciais para SNMP).
+4.  Em **Community String (v1/v2c):** Digite sua senha: **`Monitoramento_Rede_Seap`**.
+5.  Clique em **Save** (Salvar).
+
+### Passo 3: Adicionar os Sensores Essenciais
+
+Agora que o PRTG sabe como falar com o pfSense, vamos adicionar os sensores críticos:
+
+1.  Ainda na página do **`pfSense Firewall`**, clique no botão grande **Add Sensor** (Adicionar Sensor).
+2.  Use a barra de pesquisa e adicione os seguintes sensores, um por um:
+
+| Sensor | Propósito | Sensores Usados (Contagem PRTG) |
+| :--- | :--- | :--- |
+| **Ping** | Verifica se o pfSense está online e mede a latência da sua rede interna. | 1 |
+| **SNMP Custom** (ou SNMP UCD) | Adicione sensores para **CPU Load** e **Memory** (Uso de Memória). Isso é vital para saber se o hardware do pfSense está sobrecarregado. | 2 |
+| **SNMP Traffic** | Use este sensor para monitorar o tráfego nas interfaces. Você deve adicioná-lo **duas vezes**: uma para a **WAN** (seu link dedicado) e outra para a **LAN** (sua rede interna). | 2 |
+| **Total Estimado** | | **5 Sensores** |
+
+O PRTG levará alguns minutos para coletar os primeiros dados. Depois, você verá um status verde (OK) e começará a ter gráficos de desempenho em tempo real.
+
+Parabéns! Você já tem um sistema de monitoramento profissional rodando em paralelo com seu pfSense. Seus 100 sensores gratuitos estão praticamente intactos.
+
+Qual métrica você está mais interessado em ver primeiro (Tráfego da WAN, uso da CPU, etc.)?
 
 ---
 ## Próximo Passo
