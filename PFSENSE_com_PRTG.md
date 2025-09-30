@@ -164,6 +164,50 @@ Agora que o PRTG sabe como falar com o pfSense, vamos adicionar os sensores crí
 | **SNMP Traffic** | Use este sensor para monitorar o tráfego nas interfaces. Você deve adicioná-lo **duas vezes**: uma para a **WAN** (seu link dedicado) e outra para a **LAN** (sua rede interna). | 2 |
 | **Total Estimado** | | **5 Sensores** |
 
+### Modo 2:
+
+Essa é a característica da **descoberta automática (auto-discovery)** do PRTG. É normal que ele crie uma estrutura completa logo de início, tentando encontrar todos os dispositivos da sua rede.
+
+Quando você tenta clicar em "Add Device" e ele não deixa, é provável que você esteja clicando no local errado da árvore. Vamos tentar o procedimento correto para adicionar o pfSense **manualmente** e garantir que ele esteja sendo monitorado corretamente.
+
+---
+
+## Como Adicionar Dispositivos na Estrutura do PRTG
+
+A estrutura do PRTG é hierárquica (em árvore):
+
+**Root (Raiz) ⮕ Seu Local Probe (Sonda Local) ⮕ Grupos ⮕ Dispositivos (Devices) ⮕ Sensores**
+
+Você deve adicionar seu novo dispositivo (o pfSense) **dentro do seu `Local Probe`** ou em um **`Grupo`** que você criar.
+
+1.  **Encontre o `Local Probe`:** Na árvore à esquerda, procure pelo item chamado **`Local Probe`** (ou `Sonda Local`). Ele deve estar logo abaixo da raiz principal.
+2.  **Clique com o botão direito** sobre o **`Local Probe`**.
+3.  No menu que aparece, selecione **Add Device** (Adicionar Dispositivo).
+
+Se mesmo assim não funcionar, você pode tentar adicionar um **Grupo** primeiro:
+
+1.  Clique com o botão direito no **`Local Probe`**.
+2.  Selecione **Add Group** (Adicionar Grupo). Chame-o de `Firewalls e Roteadores`.
+3.  Agora, clique com o botão direito no novo grupo **`Firewalls e Roteadores`** e selecione **Add Device**.
+
+---
+
+## Gerenciando os Sensores Existentes
+
+Enquanto você tenta adicionar o pfSense, é crucial que você **verifique a contagem de sensores** da árvore que o PRTG criou automaticamente.
+
+Se o PRTG já detectou o pfSense, ele pode estar escondido em algum lugar.
+
+1.  **Procure na Árvore:** Role a árvore e procure por um dispositivo com o nome do seu Windows Server (`WS2012R2`) e outros IPs da sua rede (`10.0.0.x`).
+2.  **Verifique a Contagem:** Olhe no canto superior ou no rodapé da tela do PRTG. Deve haver um contador mostrando algo como: **`X de 100 sensores em uso.`**
+
+**Ação:** Se o PRTG já usou muitos dos seus 100 sensores em dispositivos que não são importantes, você precisa **excluir** esses dispositivos ou **pausar** os sensores desnecessários.
+
+**Vamos focar em um dispositivo de cada vez:**
+
+1.  Você conseguiu encontrar o **`Local Probe`** na árvore?
+2.  O PRTG adicionou algum dispositivo com o IP **`10.0.0.1`** automaticamente? (Se sim, você só precisa configurar o SNMP nele).
+
 O PRTG levará alguns minutos para coletar os primeiros dados. Depois, você verá um status verde (OK) e começará a ter gráficos de desempenho em tempo real.
 
 Parabéns! Você já tem um sistema de monitoramento profissional rodando em paralelo com seu pfSense. Seus 100 sensores gratuitos estão praticamente intactos.
